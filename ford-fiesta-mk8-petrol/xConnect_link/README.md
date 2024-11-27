@@ -14,4 +14,13 @@ CANH - PIN 12
 
 CANL - PIN 13
 
-Connect a 180 ohm resistor between fuel lvl, and fuel lvl return to get full fuel
+
+## Fuel
+
+Fuel level is determined by the resistance between fuel lvl and fuel lvl return pins.
+
+Connect a 10 ohm resistor to display full fuel (this is a four band resistor with the following properties: Band #1 Brown, Band #2 Black, Multiplier #3 Black, Tolerance #4 Gold)
+
+An 180 ohm resistor will display empty fuel (default if no resistor is connected).
+
+Values in between 10 <-> 180 will display differing fuel levels.
