@@ -48,8 +48,8 @@ isnull([DataCorePlugin.GameRawData.Drivetrain.CruiseControl],'0') + ';'
 #define __SHCUSTOMPROTOCOL_H__
 
 #include <Arduino.h>
-String rpmS, speedS, fuel, tempS, gearS, turnL, turnR, ignitionS, handbrakeS, showLights, shiftLight, highBeams, cruiseControl, ABSS, TCS;
-int rpm, speed, temp, blinkerL, blinkerR, ignition, brakeApplied, oilWarn, tc, tpms, battWarn, fullBeam, rpmgate, finetune, distance, finetuner, distanceTravelled, gearInd, absLight, arrow, handbrake, gear, counter;
+String rpmS, speedS, fuel, tempS, gearS, turnL, turnR, ignitionS, handbrakeS, showLights, shiftLight, highBeams, cruiseControlS, ABSS, TCS;
+int rpm, speed, temp, blinkerL, blinkerR, ignition, brakeApplied, oilWarn, tc, tpms, battWarn, fullBeam, cruiseControl, rpmgate, finetune, distance, finetuner, distanceTravelled, gearInd, absLight, arrow, handbrake, gear, counter;
 bool handbrakeOn;
 class SHCustomProtocol {
 private:
@@ -83,7 +83,7 @@ public:
     showLights = FlowSerialReadStringUntil(';') + ";";
     shiftLight = FlowSerialReadStringUntil(';');
     highBeams = FlowSerialReadStringUntil(';');
-    cruiseControl = FlowSerialReadStringUntil(';');
+    cruiseControlS = FlowSerialReadStringUntil(';');
     String concate = "";
     int p = 0;
     tc = 0x00;
@@ -150,6 +150,12 @@ public:
       handbrakeOn = false;
     }
 
+    if(cruiseControlS == "1") {
+      cruiseControl = B01000000;
+    } else {
+      cruiseControl = 0x00;
+    }
+		
     if(ABSS == "1") {
       absLight = B01000000;
     } else {
@@ -159,6 +165,7 @@ public:
     if(TCS == "1") {
       tc = B00000010;
     }
+		
     if(temp == 0 && battWarn == 17) {
       ignition = 0x00;
       battWarn = 0x00;
@@ -229,7 +236,8 @@ public:
     //Byte 1: B00001000=Flashing CEL, B00000100=Solid CEL
 
     //Charging System
-    opSend(0x42C, 0x00, battWarn, 0xA6, 0x00, 0x00, 0x00, 0x00, 0x00);
+    opSend(0x42C, cruiseControl, battWarn, 0xA6, 0x00, 0x00, 0x00, 0x00, 0x00);
+    //Byte 1: B10010000=Cruise Control Icon, B01110111=Cruise Control Icon + Set
     //Byte 2: 17=Charge Light (No Message on Screen)
 
     //Power Steering
